@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { isUserLoggedIn, getStoredUser, isAdmin } from "../authUtils";
 import SearchResultsModal from "./SearchResultsModal";
 import Entry from "./Entry";
-import { DonorList } from "./donorList";
+import Donors from "./Donors";
 
 export default function Donor() {
   const router = useRouter();
@@ -98,7 +98,7 @@ export default function Donor() {
             )}
             {activeTab === 2 && (
               <div className="p-8 pt-6">
-                <DonorList user={user} />
+                <Donors user={user} />
               </div>
             )}
           </div>

@@ -1,0 +1,273 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Web Receipt</title>
+    <link href="./css/bootstrap.min.css" rel="stylesheet" />
+    <link
+      href="./font-awesome-4.7.0/css/font-awesome.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .mainDiv {
+        height: 113mm;
+        width: 69mm;
+        border: 1px solid transperent;
+        margin-top: 5mm;
+        margin-left: 6mm;
+      }
+
+      .tphead {
+        font-weight: bold;
+        font-size: 2.9mm;
+        margin-left: 10mm;
+      }
+
+      .nameHead {
+        font-size: 3.2mm;
+        font-weight: bold;
+      }
+
+      .add {
+        font-weight: bold;
+        font-size: 3mm;
+      }
+
+      .middlLib {
+        padding-top: 0mm;
+      }
+
+      .footer {
+        page-break-after: always;
+      }
+
+      hr {
+        margin-bottom: 1mm;
+        margin-top: 2mm;
+        width: 97%;
+        border-top: 1px solid black;
+      }
+
+      .classAcc {
+        font-weight: bold;
+        font-size: 3.2mm;
+        margin-bottom: 0mm;
+      }
+
+      .classAuth {
+        font-size: 3mm;
+        font-weight: bold;
+      }
+
+      .midtbl {
+        text-align: center;
+      }
+
+      @page {
+        size: 160mm 200mm;
+        margin: 1mm;
+        margin-top: 5mm;
+      }
+
+      @media print {
+        html,
+        body {
+          width: 160mm;
+          height: 200mm;
+        }
+
+        #icardContainerDiv {
+          margin-top: 5mm;
+        }
+      }
+
+      .imgbarcode {
+        width: 35mm;
+        height: 6mm;
+        margin-left: 3mm;
+      }
+
+      .watermark {
+        color: #d0d0d0;
+        position: absolute;
+        margin-top: 100px;
+        height: 250px;
+        margin-bottom: 100px;
+        margin-left: 160px;
+        margin-right: 20px;
+        z-index: 100;
+        opacity: 0.1;
+      }
+      /*.watermark {
+            color: #d0d0d0;
+            margin: 0;
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            margin-right: -50%;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+            opacity: 0.1;
+        }*/
+    </style>
+  </head>
+  <body>
+    <div
+      id="icardContainerDiv"
+      class="container"
+      style="
+        width: 100%;
+        margin-top: 0;
+        margin-left: 0;
+        page-break-after: always;
+      "
+    >
+      <div class="watermark">
+        <img src="../assets/img/NameBJP.png" height="250px" />
+      </div>
+      <div class="panel">
+        <div>
+          <table class="table" style="margin-bottom: 10px">
+            <tr>
+              <td style="border: none; width: 20%">
+                <img src="../assets/img/NameBJP.png" style="max-height: 90px" />
+              </td>
+              <td style="border: none; text-align: center; width: 60%">
+                <img src="../assets/img/BJPName.png" width="420px" /><br />
+                <img
+                  src="../assets/img/vasai-virar.png"
+                  style="margin-top: -8px; width: 200px"
+                />
+              </td>
+              <td style="border: none; width: 20%; text-align: end">
+                <img src="../assets/img/Yogesh.png" style="max-height: 80px" />
+                <br />
+                <img
+                  src="../assets/img/JilhaMahamantri.png"
+                  style="width: 70px"
+                />
+              </td>
+            </tr>
+          </table>
+        </div>
+        <h4 style="text-align: center">
+          Your application is successfully submitted!
+        </h4>
+        <div>
+          <table class="table table-condensed table-bordered">
+            <tr>
+              <td colspan="2">
+                <h6 style="text-align: center; color: #7d7d7d">
+                  ACKNOWLEDGEMENT
+                </h6>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                ID.:
+                <span
+                  style="font-size: 12px; font-weight: 600"
+                  id="receiptid"
+                ></span>
+              </td>
+              <td>
+                Date:
+                <span
+                  style="font-size: 12px; font-weight: 600"
+                  id="receiptdate"
+                ></span>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Name:
+                <span
+                  style="font-size: 12px; font-weight: 600"
+                  id="receiptname"
+                ></span>
+              </td>
+              <td>
+                Mobile:
+                <span
+                  style="font-size: 12px; font-weight: 600"
+                  id="receiptmobile"
+                ></span>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                Type:
+                <span
+                  style="font-size: 12px; font-weight: 600"
+                  id="receipttype"
+                ></span>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                Reference/EPIC No.:
+                <span
+                  style="font-size: 12px; font-weight: 600"
+                  id="referenceNo"
+                ></span>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                Remark.:
+                <span
+                  style="font-size: 12px; font-weight: 600"
+                  id="receiptremark"
+                ></span>
+              </td>
+            </tr>
+          </table>
+          <hr />
+          <div>
+            <h5 style="text-align: center">
+              Follow Yogesh Singh on social media for latest updates!!!
+            </h5>
+            <table class="table" style="margin-bottom: 0px">
+              <tr>
+                <td
+                  style="
+                    border: none;
+                    text-align: center;
+                    width: 26%;
+                    color: #003b97;
+                  "
+                >
+                  <i
+                    class="fa fa-facebook-official"
+                    style="margin-right: 5px"
+                  ></i
+                  >/yogeshssinghbjp
+                </td>
+                <td
+                  style="
+                    border: none;
+                    text-align: center;
+                    width: 37%;
+                    color: #a92f45;
+                  "
+                >
+                  <i class="fa fa-instagram" style="margin-right: 5px"></i
+                  >/yogeshssinghbjp
+                </td>
+                <td style="border: none; text-align: center; width: 37%">
+                  <i class="fa fa-twitter" style="margin-right: 5px"></i
+                  >/yogeshssinghbjp
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div>
+          <img src="../assets/img/BJPYogeshFooter.jpg" width="100%" />
+        </div>
+      </div>
+    </div>
+    <script src="./js/jquery.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/custom/receipt.js"></script>
+  </body>
+</html>

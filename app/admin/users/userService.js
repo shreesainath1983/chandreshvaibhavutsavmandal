@@ -33,7 +33,7 @@ export async function addUser(userData) {
     role_id: role_id || 2, // Default to user role
   };
 
-  const res = await fetch(`/api/members`, {
+  const res = await fetch(`/api/users`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

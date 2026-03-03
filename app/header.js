@@ -59,20 +59,11 @@ const Header = () => {
 
             {/* Desktop Menu */}
             <nav className="hidden md:flex gap-6">
-              <Link
-                href="/voterslip"
-                className="hover:text-purple-800 transition"
-              >
-                Voter Slip
+              <Link href="/donors" className="hover:text-purple-800 transition">
+                Donors
               </Link>
               {isAdminUser && (
                 <>
-                  <Link
-                    href="/donors"
-                    className="hover:text-purple-800 transition"
-                  >
-                    Donors
-                  </Link>
                   <Link
                     href="/admin/dashboard"
                     className="hover:text-purple-800 transition"
@@ -127,21 +118,14 @@ const Header = () => {
       {isMenuOpen && (
         <nav className="bg-purple-300 mt-3 flex flex-col gap-4 p-4 md:hidden">
           <Link
-            href="/voterslip"
+            href="/donors"
             className="hover:text-purple-800 transition"
             onClick={() => setIsMenuOpen(false)}
           >
-            Voter Slip
+            Donors
           </Link>
           {isAdminUser && (
             <>
-              <Link
-                href="/donors"
-                className="hover:text-purple-800 transition"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Donors
-              </Link>
               <Link
                 href="/admin/dashboard"
                 className="hover:text-purple-800 transition"

@@ -92,7 +92,10 @@ const Donors = ({ user }) => {
       return;
     }
 
-    const msg = `Hi ${data.donor_name}, your donation receipt is ready. Please attach the downloaded PDF. धन्यवाद 🙏`;
+    const msg = `Hi ${data.donor_name}, thank you for your donation to our Mandal. Your receipt is attached.
+
+Thank you 🙏
+Chandresh Vaibhav Utsav Mandal`;
 
     window.open(
       `https://wa.me/91${data.mobile}?text=${encodeURIComponent(msg)}`,
@@ -203,13 +206,13 @@ const Donors = ({ user }) => {
       )}
       {/* Hidden receipt (used only for PDF capture) */}
       <div
-      // style={{
-      //   position: "fixed",
-      //   top: "-10000px",
-      //   left: "-10000px",
-      //   opacity: 0,
-      //   pointerEvents: "none",
-      // }}
+        style={{
+          position: "fixed",
+          top: "-10000px",
+          left: "-10000px",
+          opacity: 0,
+          pointerEvents: "none",
+        }}
       >
         {donor && <Receipt ref={receiptRef} donor={donor} />}
       </div>

@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { addDonor, getDonorsByUser, getLatestCounter } from "./donorService";
-import { formatDateToDDMMMYYYY } from "../common";
+import { formatDateToDDMMMYYYY, numberToRupeesWords } from "../common";
 import Receipt from "./Receipt";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import { FaWhatsapp, FaDownload } from "react-icons/fa";
 
 const Donors = ({ user }) => {
   const receiptRef = useRef(null);
@@ -35,7 +36,9 @@ const Donors = ({ user }) => {
   }, [user]);
 
   const downloadReceipt = (data) => {
-    setDonor(data);
+    const amountInWords = numberToRupeesWords(data.amount);
+    const donorWithWords = { ...data, amountInWords, received_by: user.name };
+    setDonor(donorWithWords);
     // wait for hidden receipt to update
     setTimeout(async () => {
       try {
@@ -75,7 +78,7 @@ const Donors = ({ user }) => {
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
         pdf.addImage(imgData, "PNG", 10, 10, imgWidth, imgHeight);
-        pdf.save(`${donor.donor_name}_${donor.receipt_no}.pdf`);
+        pdf.save(`${data.donor_name}_${data.receipt_no}.pdf`);
       } catch (error) {
         console.error("Error generating receipt:", error);
         setError("Failed to download receipt. Please try again.");
@@ -108,7 +111,7 @@ const Donors = ({ user }) => {
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-6">
+    <div className="bg-white rounded-xl shadow-lg">
       <h2 className="text-2xl font-bold text-gray-800 mb-6">
         Donors ({donors?.length || 0})
       </h2>
@@ -118,10 +121,7 @@ const Donors = ({ user }) => {
             <thead>
               <tr className="bg-gray-100 border-b-2 border-gray-300">
                 <th className="px-4 py-3 text-left font-semibold text-gray-800">
-                  Download
-                </th>
-                <th className="px-4 py-3 text-left font-semibold text-gray-800">
-                  WhatsApp
+                  Action
                 </th>
                 <th className="px-4 py-3 text-left font-semibold text-gray-800">
                   Receipt No
@@ -158,22 +158,20 @@ const Donors = ({ user }) => {
                   }`}
                 >
                   <td>
-                    <button
-                      className="w-full cursor-pointer bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold py-2 rounded-lg hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition"
-                      type="button"
-                      onClick={() => downloadReceipt(donor)}
-                    >
-                      Download
-                    </button>
-                  </td>
-                  <td>
-                    <button
-                      className="w-full cursor-pointer bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold py-2 rounded-lg hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition"
-                      type="button"
-                      onClick={() => openWhatsApp(donor)}
-                    >
-                      WhatsApp
-                    </button>
+                    <div className="flex items-center gap-3 px-4 py-3">
+                      <FaDownload
+                        size={24}
+                        className="text-blue-500 cursor-pointer"
+                        title="Download"
+                        onClick={() => downloadReceipt(donor)}
+                      />
+                      <FaWhatsapp
+                        size={28}
+                        className="text-green-500 cursor-pointer"
+                        title="WhatsApp"
+                        onClick={() => openWhatsApp(donor)}
+                      />
+                    </div>
                   </td>
                   <td className="px-4 py-3 text-gray-700">
                     {donor.receipt_no}

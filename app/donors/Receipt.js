@@ -35,15 +35,22 @@ const Receipt = React.forwardRef(({ donor }, ref) => {
           fontSize: 12,
         }}
       >
-        <div style={{ color: "#5e5e5e" }}>Estd. 2025</div>
+        <div style={{ color: "#5e5e5e" }}>स्थापना. 2025</div>
         <div style={{ color: "red" }}>।। श्री गणेशाय नमः ।।</div>
         <div style={{ color: "#5e5e5e" }}>
-          Year: {new Date().getFullYear() - 2025 + 1}
+          वर्ष: {new Date().getFullYear() - 2025 + 1}
         </div>
       </div>
-      <div style={{ display: "flex", gap: "5px" }}>
-        <div style={{ width: "60px", height: "60px", marginTop: 2 }}>
-          <img src="../images/onlyLogo.png" width="60px" height="60px" />
+      <div
+        style={{
+          display: "flex",
+          gap: "5px",
+          marginBottom: 10,
+          alignItems: "center",
+        }}
+      >
+        <div style={{ width: "55px", height: "60px", marginTop: 2 }}>
+          <img src="../images/LT.png" width="55px" height="60px" />
         </div>
         <div style={{ flex: 1, textAlign: "center" }}>
           <h1
@@ -54,17 +61,26 @@ const Receipt = React.forwardRef(({ donor }, ref) => {
               fontWeight: "bold",
             }}
           >
-            CHANDRESH VAIBHAV UTSAV MANDAL
+            चंद्रेश वैभव उत्सव मंडळ
           </h1>
           <p
             style={{ margin: 0, fontSize: 12, color: "#5e5e5e", marginTop: 4 }}
           >
-            Chandresh Vaibhav Co. Ho. Soc., Achole Road, Nallasopara East -
-            401209
+            चंद्रेश वैभव कॉ. हो. सोस., अचोले रोड, नालासोपारा पूर्व - 401209
+          </p>
+          <p
+            style={{
+              margin: 0,
+              fontSize: 12,
+              fontWeight: "bold",
+              color: "#2b2b2b",
+            }}
+          >
+            नोंदणी क्र. पालघर-0000923/2025
           </p>
         </div>
-        <div style={{ width: "40px", marginTop: 2 }}>
-          <img src="../images/CSM.png" width="40px" height="auto" />
+        <div style={{ width: "50px", marginTop: 2 }}>
+          <img src="../images/CSM.png" width="50px" height="60px" />
         </div>
       </div>
       <hr />
@@ -72,39 +88,53 @@ const Receipt = React.forwardRef(({ donor }, ref) => {
       <div style={{ textAlign: "center", margin: "10px 0", color: "#532d75" }}>
         Donation Receipt
       </div>
-      <table style={{ width: "100%", marginBottom: 20 }}>
+      <table
+        style={{
+          width: "100%",
+          marginBottom: 20,
+          borderCollapse: "collapse",
+          border: "1px solid #ddd",
+        }}
+      >
         <tbody>
           <tr>
-            <td style={{ padding: "5px" }}>
+            <td style={{ padding: "5px", border: "1px solid #ddd" }}>
               <b>Receipt No:</b> {donor.receipt_no}
             </td>
-            <td style={{ padding: "5px" }}>
+            <td style={{ padding: "5px", border: "1px solid #ddd" }}>
               <b>Date:</b>{" "}
               {new Date(donor.receipt_date).toLocaleDateString("en-IN")}
             </td>
           </tr>
           <tr>
-            <td colSpan={2} style={{ padding: "5px" }}>
+            <td
+              colSpan={2}
+              style={{ padding: "5px", border: "1px solid #ddd" }}
+            >
               <b>Name:</b> {donor.donor_name}
             </td>
           </tr>
           <tr>
-            <td colSpan={2} style={{ padding: "5px" }}>
+            <td style={{ padding: "5px", border: "1px solid #ddd" }}>
               <b>Amount: </b> ₹{donor.amount}
             </td>
-          </tr>
-          <tr>
-            <td colSpan={2} style={{ padding: "5px" }}>
+            <td style={{ padding: "5px", border: "1px solid #ddd" }}>
               <b>Payment Mode:</b> {donor.payment_mode}
             </td>
           </tr>
           <tr>
-            <td colSpan={2} style={{ padding: "5px" }}>
+            <td
+              colSpan={2}
+              style={{ padding: "5px", border: "1px solid #ddd" }}
+            >
               <b>Amount in Words:</b> {donor.amountInWords}
             </td>
           </tr>
           <tr>
-            <td colSpan={2} style={{ padding: "5px" }}>
+            <td
+              colSpan={2}
+              style={{ padding: "5px", border: "1px solid #ddd" }}
+            >
               <b>Event:</b> {donor.event}
             </td>
           </tr>

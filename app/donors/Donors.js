@@ -203,13 +203,13 @@ const Donors = ({ user }) => {
       )}
       {/* Hidden receipt (used only for PDF capture) */}
       <div
-        style={{
-          position: "fixed",
-          top: "-10000px",
-          left: "-10000px",
-          opacity: 0,
-          pointerEvents: "none",
-        }}
+      // style={{
+      //   position: "fixed",
+      //   top: "-10000px",
+      //   left: "-10000px",
+      //   opacity: 0,
+      //   pointerEvents: "none",
+      // }}
       >
         {donor && <Receipt ref={receiptRef} donor={donor} />}
       </div>

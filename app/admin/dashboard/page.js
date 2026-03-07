@@ -26,7 +26,7 @@ export default function Dashboard() {
       return;
     }
     const user = getStoredUser();
-    if (!isAdmin(user)) {
+    if (!isAdmin(user) && user.role_id !== 3) {
       router.push("/donors");
       return;
     }

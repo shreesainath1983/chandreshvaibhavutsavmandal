@@ -18,15 +18,17 @@ export default function UsersManagement() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-
-  const [formData, setFormData] = useState({
+  const defaultFormData = {
     name: "",
     designation_id: "4",
     email: "",
     mobile: "",
     password: "",
     role_id: "2",
-  });
+    is_lock: true,
+  };
+
+  const [formData, setFormData] = useState(defaultFormData);
 
   const createEmail = (name) => {
     if (!name) return "";
@@ -66,18 +68,13 @@ export default function UsersManagement() {
     try {
       const result = await addUser({
         ...formData,
+        password: setDefaultPassword(formData.email, formData.mobile),
         role_id: parseInt(formData.role_id),
         designation_id: parseInt(formData.designation_id),
       });
       if (result.ok && result.data) {
         setSuccess("Member added successfully!");
-        setFormData({
-          name: "",
-          email: "",
-          password: "",
-          role_id: "2",
-          designation_id: "4",
-        });
+        setFormData(defaultFormData);
         // Refresh users list
         await loadUsers();
       } else {
@@ -95,6 +92,10 @@ export default function UsersManagement() {
     try {
       const result = await fetchAllUsers();
       if (result.ok && result.data) {
+        if (!isAdmin(getStoredUser())) {
+          // If not admin, filter out admin users from the list
+          result.data = result.data.filter((user) => user.role?.role_id !== 1);
+        }
         setUsers(result.data);
       } else {
         setError(result.error || "Failed to load users");
@@ -146,6 +147,12 @@ export default function UsersManagement() {
     }
   };
 
+  const setDefaultPassword = (email, mobile) => {
+    const emailPart = email.split("@")[0];
+    const mobilePart = mobile ? mobile.slice(-4) : "0000";
+    return `${emailPart}@${mobilePart}`;
+  };
+
   useEffect(() => {
     // Check if user is logged in and is admin
     if (!isUserLoggedIn()) {
@@ -154,7 +161,7 @@ export default function UsersManagement() {
     }
 
     const storedUser = getStoredUser();
-    if (!isAdmin(storedUser)) {
+    if (!isAdmin(storedUser) && storedUser.role_id !== 3) {
       router.push("/donors");
       return;
     }
@@ -277,16 +284,17 @@ export default function UsersManagement() {
 
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Password *
+                    Assign Login *
                   </label>
-                  <input
-                    type="password"
-                    name="password"
-                    value={formData.password}
+                  <select
+                    name="is_lock"
+                    value={formData.is_lock}
                     onChange={handleChange}
-                    placeholder="Enter password (optional)"
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
+                  >
+                    <option value={false}>Yes</option>
+                    <option value={true}>No</option>
+                  </select>
                 </div>
 
                 <div>

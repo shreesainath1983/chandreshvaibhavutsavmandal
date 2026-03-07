@@ -67,6 +67,13 @@ export function isAdmin() {
   return user.role_id === 1;
 }
 
+export function isContributor() {
+  const user = getStoredUser();
+  if (!user || isTokenExpired(user)) return false;
+
+  return user.role_id === 3;
+}
+
 export function isUserRole() {
   const user = getStoredUser();
   if (!user || isTokenExpired(user)) return false;

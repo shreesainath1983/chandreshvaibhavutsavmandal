@@ -20,7 +20,7 @@ export async function fetchDesignation() {
 }
 
 export async function addUser(userData) {
-  const { id, name, email, password, role_id } = userData;
+  const { id, name, email, password, role_id, is_lock } = userData;
 
   if (!name || !email) {
     throw new Error("Name and email are required");
@@ -31,6 +31,7 @@ export async function addUser(userData) {
     email,
     password: password || null,
     role_id: role_id || 2, // Default to user role
+    is_lock: is_lock || true, // Default to locked
   };
 
   const res = await fetch(`/api/users`, {

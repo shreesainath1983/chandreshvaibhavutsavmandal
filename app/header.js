@@ -2,7 +2,12 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { getUserName, isAdmin, isUserLoggedIn } from "./authUtils";
+import {
+  getUserName,
+  isAdmin,
+  isContributor,
+  isUserLoggedIn,
+} from "./authUtils";
 import "./globals.css";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
@@ -13,14 +18,17 @@ const Header = () => {
     designation: "N/A",
   };
   const [isAdminUser, setIsAdminUser] = useState(false);
+  const [isContributorUser, setIsContributorUser] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const adminStatus = isAdmin();
+  const contriStatus = isContributor();
   const [userName, setUserName] = useState(defaultDesignation);
   const [isHideMenu, setIsHideMenu] = useState(true);
   const pathname = usePathname();
   useEffect(() => {
     setIsAdminUser(adminStatus);
-  }, [adminStatus]);
+    setIsContributorUser(contriStatus);
+  }, [adminStatus, contriStatus]);
 
   useEffect(() => {
     setIsHideMenu(pathname === "/login");
@@ -62,7 +70,7 @@ const Header = () => {
               <Link href="/donors" className="hover:text-purple-800 transition">
                 Donors
               </Link>
-              {isAdminUser && (
+              {isAdminUser || isContributorUser ? (
                 <>
                   <Link
                     href="/admin/dashboard"
@@ -77,7 +85,13 @@ const Header = () => {
                     Users
                   </Link>
                 </>
-              )}
+              ) : null}
+              <Link
+                href="/profile"
+                className="hover:text-purple-800 transition"
+              >
+                Profile
+              </Link>
               <div
                 className="hover:text-purple-800 transition cursor-pointer"
                 title="Logout"
@@ -124,7 +138,7 @@ const Header = () => {
           >
             Donors
           </Link>
-          {isAdminUser && (
+          {isAdminUser || isContributorUser ? (
             <>
               <Link
                 href="/admin/dashboard"
@@ -140,7 +154,14 @@ const Header = () => {
                 Users
               </Link>
             </>
-          )}
+          ) : null}
+          <Link
+            href="/profile"
+            className="hover:text-purple-800 transition"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            Profile
+          </Link>
           <div
             className="hover:text-purple-800 transition cursor-pointer flex items-center gap-2"
             title="Logout"

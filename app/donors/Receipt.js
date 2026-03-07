@@ -35,9 +35,11 @@ const Receipt = React.forwardRef(({ donor }, ref) => {
           fontSize: 12,
         }}
       >
-        <div style={{ color: "#5e5e5e" }}>स्थापना. 2025</div>
+        <div style={{ color: "#5e5e5e", width: "80px", textAlign: "left" }}>
+          स्थापना. 2025
+        </div>
         <div style={{ color: "red" }}>।। श्री गणेशाय नमः ।।</div>
-        <div style={{ color: "#5e5e5e" }}>
+        <div style={{ color: "#5e5e5e", width: "80px", textAlign: "right" }}>
           वर्ष: {new Date().getFullYear() - 2025 + 1}
         </div>
       </div>
@@ -66,7 +68,7 @@ const Receipt = React.forwardRef(({ donor }, ref) => {
           <p
             style={{ margin: 0, fontSize: 12, color: "#5e5e5e", marginTop: 4 }}
           >
-            चंद्रेश वैभव कॉ. हो. सोस., अचोले रोड, नालासोपारा पूर्व - 401209
+            चंद्रेश वैभव को. ऑ. हौ. सो., आचोळे रोड, नालासोपारा पूर्व - 401209
           </p>
           <p
             style={{

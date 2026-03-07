@@ -17,7 +17,8 @@ export async function GET() {
       designation:designation_id (
         id,
         designation
-      )
+      ),
+      is_lock
     `,
     )
     .order("created_at", { ascending: false });
@@ -36,7 +37,7 @@ export async function GET() {
 export async function POST(req) {
   try {
     const body = await req.json();
-    const { name, email, password, role_id } = body;
+    const { name, email, password, role_id, is_lock } = body;
     if (!name || !email)
       return NextResponse.json(
         { error: "name and email required" },
@@ -48,6 +49,7 @@ export async function POST(req) {
       email,
       password: password || null,
       role_id: role_id || null,
+      is_lock: is_lock || true,
     };
 
     const { data, error } = await supabase

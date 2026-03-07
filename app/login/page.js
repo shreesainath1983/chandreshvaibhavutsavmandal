@@ -10,6 +10,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     // Check if user is already logged in
@@ -24,6 +25,7 @@ export default function Login() {
     try {
       const result = await loginUser(email, password);
       if (result.ok && result.data) {
+        setIsLoggedIn(true);
         // Store user data in localStorage
         const expirationDate = new Date();
         expirationDate.setHours(expirationDate.getHours() + 1); // 1 hour expiration
@@ -52,6 +54,16 @@ export default function Login() {
       setLoading(false);
     }
   };
+
+  if (isLoggedIn) {
+    return (
+      <div className="flex justify-center items-center min-h-[calc(100vh-150px)] bg-gradient-to-br from-red-400 to-purple-400 p-4">
+        <h2 className="text-2xl font-bold text-white">
+          You are logged in. Redirecting...
+        </h2>
+      </div>
+    );
+  }
 
   return (
     <div className="flex justify-center items-center min-h-[calc(100vh-150px)] bg-gradient-to-br from-red-400 to-purple-400 p-4">

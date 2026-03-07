@@ -98,8 +98,6 @@ export default function Entry({ user }) {
         ...formData,
         received_by: parseInt(formData.received_by),
       });
-      console.log("**result", result);
-
       if (result.ok && result.data) {
         alert("Donor added successfully!");
         // Refresh users list

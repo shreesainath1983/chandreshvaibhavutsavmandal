@@ -7,8 +7,6 @@ export async function POST(req) {
   try {
     const body = await req.json();
     const { id, oldPassword, newPassword } = body;
-    console.log("Received password reset request for user ID:", id);
-    console.log("Request body:", body);
     if (!oldPassword || !newPassword) {
       return NextResponse.json(
         { error: errorMessage.CREDENTIAL_REQUIRED },

@@ -93,7 +93,8 @@ const Donors = ({ user }) => {
     }
 
     const msg = `Hi ${data.donor_name}, 
-    Your donation of ₹${data.amount} to our mandal is confirmed. Your receipt is attached.
+    
+Your donation of ₹${data.amount} to our mandal is confirmed. Your receipt is attached.
 
 Thank you 🙏
 Chandresh Vaibhav Utsav Mandal`;

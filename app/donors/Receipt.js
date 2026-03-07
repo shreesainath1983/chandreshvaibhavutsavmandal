@@ -104,8 +104,7 @@ const Receipt = React.forwardRef(({ donor }, ref) => {
               <b>Receipt No:</b> {donor.receipt_no}
             </td>
             <td style={{ padding: "5px", border: "1px solid #ddd" }}>
-              <b>Date:</b>{" "}
-              {new Date(donor.receipt_date).toLocaleDateString("en-IN")}
+              <b>Date:</b> {donor.receipt_date}
             </td>
           </tr>
           <tr>
@@ -145,15 +144,41 @@ const Receipt = React.forwardRef(({ donor }, ref) => {
 
       <div
         style={{
-          marginTop: 20,
-          fontSize: 12,
           alignContent: "center",
           textAlign: "center",
-          color: "#5e5e5e",
         }}
       >
-        <p>Received by: {donor.received_by}</p>
-        <p>Thank you for your kind support 🙏</p>
+        <p
+          style={{
+            fontSize: 15,
+            color: "#ff4800",
+          }}
+        >
+          Thank you for your kind support 🙏
+        </p>
+        <div
+          style={{
+            marginTop: 10,
+            display: "flex",
+            justifyContent: "space-between",
+            fontSize: 10,
+            color: "#5e5e5e",
+          }}
+        >
+          <span>Received by: {donor.received_by}</span>
+          <span>
+            Printed on:{" "}
+            {new Date().toLocaleDateString("en-IN", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+              second: "2-digit",
+              hour12: false,
+            })}
+          </span>
+        </div>
       </div>
     </div>
   );

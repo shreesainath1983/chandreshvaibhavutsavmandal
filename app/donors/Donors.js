@@ -37,7 +37,13 @@ const Donors = ({ user }) => {
 
   const downloadReceipt = (data) => {
     const amountInWords = numberToRupeesWords(data.amount);
-    const donorWithWords = { ...data, amountInWords, received_by: user.name };
+    const receiptDate = formatDateToDDMMMYYYY(data.receipt_date);
+    const donorWithWords = {
+      ...data,
+      amountInWords,
+      received_by: user.name,
+      receipt_date: receiptDate,
+    };
     setDonor(donorWithWords);
     // wait for hidden receipt to update
     setTimeout(async () => {

@@ -166,6 +166,18 @@ export default function Dashboard() {
     setLoading(false);
   };
 
+  const totalReceipts = rows.length;
+  const cancelledReceipts = rows.filter((row) => row.is_cancelled).length;
+  const cancelledReceiptsAmount = rows.reduce(
+    (acc, row) => acc + (row.is_cancelled ? Number(row.amount || 0) : 0),
+    0,
+  );
+  const receiptAmount = rows.reduce(
+    (acc, row) => acc + (row.is_cancelled ? 0 : Number(row.amount || 0)),
+    0,
+  );
+  const totalAmount = receiptAmount + cancelledReceiptsAmount;
+
   if (!isAuthorized) return null;
 
   return (
@@ -217,29 +229,45 @@ export default function Dashboard() {
           <p>Loading report...</p>
         ) : (
           <div className="bg-white rounded-xl shadow-lg p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold">Donation Report</h2>
-              <>
-                <h3 className="text-2xl font-bold">
-                  Total donations:{" "}
-                  <span
-                    className={`px-3 py-1 rounded-full text-lg font-semibold bg-blue-100 text-blue-800`}
-                  >
-                    {rows.length}
-                  </span>
-                </h3>
-                <h3 className="text-2xl font-bold">
-                  Total amount:{" "}
-                  <span
-                    className={`px-3 py-1 rounded-full text-lg font-semibold bg-green-100 text-green-800`}
-                  >
-                    {rows.reduce(
-                      (acc, row) => acc + Number(row.amount || 0),
-                      0,
-                    )}
-                  </span>
-                </h3>
-              </>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 mb-4">
+              <div className="rounded-2xl border border-gray-200 bg-slate-50 p-4">
+                <div className="text-sm text-gray-500">Receipts</div>
+                <div className="mt-2 text-2xl font-semibold text-gray-900">
+                  {totalReceipts - cancelledReceipts}
+                </div>
+              </div>
+              <div className="rounded-2xl border border-gray-200 bg-slate-50 p-4">
+                <div className="text-sm text-gray-500">Receipt Amount</div>
+                <div className="mt-2 text-2xl font-semibold text-gray-900">
+                  ₹{receiptAmount}
+                </div>
+              </div>
+              <div className="rounded-2xl border border-gray-200 bg-slate-50 p-4">
+                <div className="text-sm text-gray-500">Cancelled receipts</div>
+                <div className="mt-2 text-2xl font-semibold text-gray-900">
+                  {cancelledReceipts}
+                </div>
+              </div>
+              <div className="rounded-2xl border border-gray-200 bg-slate-50 p-4">
+                <div className="text-sm text-gray-500">
+                  Cancelled receipts amount
+                </div>
+                <div className="mt-2 text-2xl font-semibold text-gray-900">
+                  ₹{cancelledReceiptsAmount}
+                </div>
+              </div>
+              <div className="rounded-2xl border border-gray-200 bg-slate-50 p-4">
+                <div className="text-sm text-gray-500">Total receipts</div>
+                <div className="mt-2 text-2xl font-semibold text-gray-900">
+                  {totalReceipts}
+                </div>
+              </div>
+              <div className="rounded-2xl border border-gray-200 bg-slate-50 p-4">
+                <div className="text-sm text-gray-500">Total amount</div>
+                <div className="mt-2 text-2xl font-semibold text-gray-900">
+                  ₹{totalAmount}
+                </div>
+              </div>
             </div>
             {rows.length > 0 ? (
               <div className="overflow-x-auto">

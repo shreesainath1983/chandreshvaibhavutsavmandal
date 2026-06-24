@@ -93,7 +93,7 @@ const Receipt = React.forwardRef(({ donor }, ref) => {
       <table
         style={{
           width: "100%",
-          marginBottom: 20,
+          marginBottom: 15,
           borderCollapse: "collapse",
           border: "1px solid #ddd",
         }}
@@ -132,11 +132,11 @@ const Receipt = React.forwardRef(({ donor }, ref) => {
             </td>
           </tr>
           <tr>
-            <td
-              colSpan={2}
-              style={{ padding: "5px", border: "1px solid #ddd" }}
-            >
+            <td style={{ padding: "5px", border: "1px solid #ddd" }}>
               <b>Event:</b> {donor.event}
+            </td>
+            <td style={{ padding: "5px", border: "1px solid #ddd" }}>
+              <b>Remark:</b> {donor.remark}
             </td>
           </tr>
         </tbody>

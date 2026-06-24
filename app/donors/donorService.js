@@ -81,3 +81,28 @@ export async function addDonor(userData) {
   const result = await res.json();
   return { ok: res.ok, data: result.data, error: result.error };
 }
+
+export async function cancelDonorReceipt(
+  donationId,
+  cancelledBy,
+  cancelReason,
+) {
+  if (!donationId || !cancelledBy || !cancelReason) {
+    throw new Error("donationId, cancelledBy and cancelReason are required");
+  }
+
+  const res = await fetch(`/api/donor`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      id: donationId,
+      cancelled_by: cancelledBy,
+      cancel_reason: cancelReason,
+    }),
+  });
+
+  const result = await res.json();
+  return { ok: res.ok, data: result.data, error: result.error };
+}

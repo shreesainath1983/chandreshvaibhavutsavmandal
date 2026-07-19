@@ -82,26 +82,6 @@ export default function Dashboard() {
   const downloadCsv = () => {
     if (!rows.length) return;
 
-    const headers = [
-      "receipt_no",
-      "donor_name",
-      "donor_address",
-      "mobile",
-      "amount",
-      "payment_mode",
-      "transaction_ref",
-      "receipt_date",
-      "event",
-      "remark",
-      "particulars",
-      "created_at",
-      "is_cancelled",
-      "cancelled_by",
-      "cancelled_at",
-      "cancel_reason",
-      "received_by",
-    ];
-
     const escapeCsv = (value) => {
       if (value == null) return "";
       const stringValue = String(value);
@@ -111,27 +91,88 @@ export default function Dashboard() {
       return stringValue;
     };
 
-    const csvRows = rows.map((row) => [
-      row.receipt_no,
-      row.donor_name,
-      row.donor_address,
-      row.mobile,
-      row.amount,
-      row.payment_mode,
-      row.transaction_ref,
-      formatDateValue(row.receipt_date),
-      row.event,
-      row.remark,
-      reportType === "expenses" ? formatParticulars(row) : "",
-      formatDateTimeValue(row.created_at),
-      row.is_cancelled,
-      row.cancelled_by,
-      row.cancelled_at,
-      row.cancel_reason,
-      row.received_by?.name || "",
-    ]);
+    let headers = [];
+    let csvRows = [];
+    let fileName = `report_${fromDate}_to_${toDate}.csv`;
 
-    const csvContent = [headers, ...csvRows]
+    if (reportType === "entries") {
+      headers = [
+        "receipt_no",
+        "donor_name",
+        "donor_address",
+        "mobile",
+        "amount",
+        "payment_mode",
+        "transaction_ref",
+        "receipt_date",
+        "event",
+        "remark",
+        "created_at",
+        "is_cancelled",
+        "cancelled_by",
+        "cancelled_at",
+        "cancel_reason",
+        "received_by",
+      ];
+
+      csvRows = rows.map((row) => [
+        row.receipt_no,
+        row.donor_name,
+        row.donor_address,
+        row.mobile,
+        row.amount,
+        row.payment_mode,
+        row.transaction_ref,
+        formatDateValue(row.receipt_date),
+        row.event,
+        row.remark,
+        formatDateTimeValue(row.created_at),
+        row.is_cancelled,
+        row.cancelled_by?.name || "",
+        row.cancelled_at,
+        row.cancel_reason,
+        row.received_by?.name || "",
+      ]);
+      fileName = `entries_${fromDate}_to_${toDate}.csv`;
+    } else {
+      headers = [
+        "voucher_no",
+        "paid_to",
+        "payment_for",
+        "event",
+        "amount",
+        "remark",
+        "particulars",
+        "expense_date",
+        "created_at",
+        "is_cancelled",
+        "cancelled_by",
+        "cancelled_at",
+        "cancel_reason",
+        "created_by",
+      ];
+
+      csvRows = rows.map((row) => [
+        row.voucher_no,
+        row.paid_to,
+        row.payment_for,
+        row.event,
+        row.amount,
+        row.remark,
+        formatParticulars(row),
+        formatDateValue(row.expense_date),
+        formatDateTimeValue(row.created_at),
+        row.is_cancelled,
+        row.cancelled_by?.name || "",
+        row.cancelled_at,
+        row.cancel_reason,
+        row.created_by?.name || "",
+      ]);
+      fileName = `expenses_${fromDate}_to_${toDate}.csv`;
+    }
+
+    const metaRow = ["Report Type", reportType];
+    const csvContent = [metaRow, headers, ...csvRows]
       .map((row) => row.map(escapeCsv).join(","))
       .join("\r\n");
 
@@ -139,7 +180,7 @@ export default function Dashboard() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `donations_${fromDate}_to_${toDate}.csv`;
+    link.download = fileName;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -197,6 +238,7 @@ export default function Dashboard() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
       <div className="max-w-6xl mx-auto">
         <h1 className="text-4xl font-bold text-gray-900 mb-6">Dashboard</h1>
+        <div className="text-sm text-gray-600 mb-4">Report: {reportType === "entries" ? "Entries" : "Expenses"}</div>
 
         <div className="bg-white rounded-xl shadow-lg p-6 mb-6 flex flex-wrap gap-4 items-end">
           <div>

@@ -303,6 +303,12 @@ const generateReceiptNo = (userId, counter, date) => {
   return `${datePart}/${userId}/${counter}`;
 };
 
+// Generate voucher number on component mount
+const generateVoucherNo = (userId, counter, date) => {
+  const datePart = getFormattedDate(date, true); // Get date in DDMMYYYY format for ID
+  return `${datePart}/${userId}/V/${counter}`;
+};
+
 const paymentModes = [
   { title: "Cash", value: "Cash" },
   { title: "GPay", value: "GPay" },
@@ -331,6 +337,7 @@ export {
   toCamelCase,
   numberToRupeesWords,
   generateReceiptNo,
+  generateVoucherNo,
   paymentModes,
   eventList,
 };

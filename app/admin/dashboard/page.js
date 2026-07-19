@@ -7,13 +7,17 @@ import {
   isAdmin,
   canGenerateReport,
 } from "../../authUtils";
-import { fetchUserVoterdataReport } from "./dashboardService";
+import {
+  fetchUserVoterdataReport,
+  fetchExpenseVoucherReport,
+} from "./dashboardService";
 
 export default function Dashboard() {
   const router = useRouter();
   const today = new Date().toISOString().split("T")[0];
 
   const [isAuthorized, setIsAuthorized] = useState(false);
+  const [reportType, setReportType] = useState("entries");
   const [fromDate, setFromDate] = useState(today);
   const [toDate, setToDate] = useState(today);
   const [loading, setLoading] = useState(false);
@@ -68,6 +72,13 @@ export default function Dashboard() {
     return `${datePart} ${hours}:${minutes}:${seconds}`;
   };
 
+  const formatParticulars = (row) => {
+    if (!row.expense_particulars || !row.expense_particulars.length) return "";
+    return row.expense_particulars
+      .map((item) => `${item.particular} (${item.amount})`)
+      .join("; ");
+  };
+
   const downloadCsv = () => {
     if (!rows.length) return;
 
@@ -82,6 +93,7 @@ export default function Dashboard() {
       "receipt_date",
       "event",
       "remark",
+      "particulars",
       "created_at",
       "is_cancelled",
       "cancelled_by",
@@ -110,6 +122,7 @@ export default function Dashboard() {
       formatDateValue(row.receipt_date),
       row.event,
       row.remark,
+      reportType === "expenses" ? formatParticulars(row) : "",
       formatDateTimeValue(row.created_at),
       row.is_cancelled,
       row.cancelled_by,
@@ -143,10 +156,10 @@ export default function Dashboard() {
     setLoading(true);
     setError("");
 
-    const res = await fetchUserVoterdataReport({
-      fromDate,
-      toDate,
-    });
+    const res =
+      reportType === "entries"
+        ? await fetchUserVoterdataReport({ fromDate, toDate })
+        : await fetchExpenseVoucherReport({ fromDate, toDate });
 
     if (res.ok) {
       setRows(res.data);
@@ -166,17 +179,17 @@ export default function Dashboard() {
     setLoading(false);
   };
 
-  const totalReceipts = rows.length;
-  const cancelledReceipts = rows.filter((row) => row.is_cancelled).length;
-  const cancelledReceiptsAmount = rows.reduce(
+  const totalRows = rows.length;
+  const cancelledRows = rows.filter((row) => row.is_cancelled).length;
+  const cancelledAmount = rows.reduce(
     (acc, row) => acc + (row.is_cancelled ? Number(row.amount || 0) : 0),
     0,
   );
-  const receiptAmount = rows.reduce(
+  const activeAmount = rows.reduce(
     (acc, row) => acc + (row.is_cancelled ? 0 : Number(row.amount || 0)),
     0,
   );
-  const totalAmount = receiptAmount + cancelledReceiptsAmount;
+  const totalAmount = activeAmount + cancelledAmount;
 
   if (!isAuthorized) return null;
 
@@ -204,12 +217,29 @@ export default function Dashboard() {
               className="border px-3 py-2 rounded-lg"
             />
           </div>
+          <div>
+            <label className="block text-sm font-semibold mb-1">
+              Report Type
+            </label>
+            <select
+              value={reportType}
+              onChange={(e) => setReportType(e.target.value)}
+              className="border rounded-lg px-3 py-2"
+            >
+              <option value="entries">Entries</option>
+              <option value="expenses">Expenses</option>
+            </select>
+          </div>
           <button
             onClick={generateReport}
             disabled={loading}
             className="bg-green-600 text-white px-6 py-2 rounded-lg font-semibold cursor-pointer"
           >
-            {loading ? "Checking..." : "Check entries"}
+            {loading
+              ? "Checking..."
+              : reportType === "entries"
+                ? "Check entries"
+                : "Check expenses"}
           </button>
           <button
             onClick={downloadCsv}
@@ -231,35 +261,46 @@ export default function Dashboard() {
           <div className="bg-white rounded-xl shadow-lg p-6">
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 mb-4">
               <div className="rounded-2xl border border-gray-200 bg-slate-50 p-4">
-                <div className="text-sm text-gray-500">Receipts</div>
-                <div className="mt-2 text-2xl font-semibold text-gray-900">
-                  {totalReceipts - cancelledReceipts}
+                <div className="text-sm text-gray-500">
+                  {reportType === "entries" ? "Receipts" : "Vouchers"}
                 </div>
-              </div>
-              <div className="rounded-2xl border border-gray-200 bg-slate-50 p-4">
-                <div className="text-sm text-gray-500">Receipt Amount</div>
                 <div className="mt-2 text-2xl font-semibold text-gray-900">
-                  ₹{receiptAmount}
-                </div>
-              </div>
-              <div className="rounded-2xl border border-gray-200 bg-slate-50 p-4">
-                <div className="text-sm text-gray-500">Cancelled receipts</div>
-                <div className="mt-2 text-2xl font-semibold text-gray-900">
-                  {cancelledReceipts}
+                  {totalRows - cancelledRows}
                 </div>
               </div>
               <div className="rounded-2xl border border-gray-200 bg-slate-50 p-4">
                 <div className="text-sm text-gray-500">
-                  Cancelled receipts amount
+                  {reportType === "entries"
+                    ? "Receipt Amount"
+                    : "Voucher Amount"}
                 </div>
                 <div className="mt-2 text-2xl font-semibold text-gray-900">
-                  ₹{cancelledReceiptsAmount}
+                  ₹{activeAmount}
                 </div>
               </div>
               <div className="rounded-2xl border border-gray-200 bg-slate-50 p-4">
-                <div className="text-sm text-gray-500">Total receipts</div>
+                <div className="text-sm text-gray-500">
+                  Cancelled {reportType === "entries" ? "receipts" : "vouchers"}
+                </div>
                 <div className="mt-2 text-2xl font-semibold text-gray-900">
-                  {totalReceipts}
+                  {cancelledRows}
+                </div>
+              </div>
+              <div className="rounded-2xl border border-gray-200 bg-slate-50 p-4">
+                <div className="text-sm text-gray-500">
+                  Cancelled {reportType === "entries" ? "receipts" : "vouchers"}{" "}
+                  amount
+                </div>
+                <div className="mt-2 text-2xl font-semibold text-gray-900">
+                  ₹{cancelledAmount}
+                </div>
+              </div>
+              <div className="rounded-2xl border border-gray-200 bg-slate-50 p-4">
+                <div className="text-sm text-gray-500">
+                  Total {reportType === "entries" ? "receipts" : "vouchers"}
+                </div>
+                <div className="mt-2 text-2xl font-semibold text-gray-900">
+                  {totalRows}
                 </div>
               </div>
               <div className="rounded-2xl border border-gray-200 bg-slate-50 p-4">
@@ -274,22 +315,40 @@ export default function Dashboard() {
                 <table className="w-full border-collapse">
                   <thead>
                     <tr className="bg-gray-100">
-                      <th className="p-3 text-left">Receipt No</th>
-                      <th className="p-3 text-left">Donor Name</th>
-                      <th className="p-3 text-left">Address</th>
-                      <th className="p-3 text-left">Mobile</th>
+                      <th className="p-3 text-left">
+                        {reportType === "entries" ? "Receipt No" : "Voucher No"}
+                      </th>
+                      <th className="p-3 text-left">
+                        {reportType === "entries" ? "Donor Name" : "Paid To"}
+                      </th>
+                      <th className="p-3 text-left">
+                        {reportType === "entries" ? "Address" : "Payment For"}
+                      </th>
+                      <th className="p-3 text-left">
+                        {reportType === "entries" ? "Mobile" : "Event"}
+                      </th>
                       <th className="p-3 text-left">Amount</th>
-                      <th className="p-3 text-left">Payment Mode</th>
-                      <th className="p-3 text-left">Transaction Ref</th>
-                      <th className="p-3 text-left">Receipt Date</th>
-                      <th className="p-3 text-left">Event</th>
-                      <th className="p-3 text-left">Remark</th>
+                      <th className="p-3 text-left">
+                        {reportType === "entries" ? "Payment Mode" : "Remark"}
+                      </th>
+                      {reportType === "expenses" && (
+                        <th className="p-3 text-left">Particulars</th>
+                      )}
+                      <th className="p-3 text-left">
+                        {reportType === "entries"
+                          ? "Transaction Ref"
+                          : "Expense Date"}
+                      </th>
                       <th className="p-3 text-left">Created At</th>
                       <th className="p-3 text-left">Cancelled</th>
                       <th className="p-3 text-left">Cancelled By</th>
                       <th className="p-3 text-left">Cancelled At</th>
                       <th className="p-3 text-left">Cancel Reason</th>
-                      <th className="p-3 text-left">Received By</th>
+                      <th className="p-3 text-left">
+                        {reportType === "entries"
+                          ? "Received By"
+                          : "Created By"}
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -300,18 +359,38 @@ export default function Dashboard() {
                           row.is_cancelled ? "bg-red-100" : "hover:bg-blue-50"
                         }`}
                       >
-                        <td className="p-3">{row.receipt_no}</td>
-                        <td className="p-3">{row.donor_name}</td>
-                        <td className="p-3">{row.donor_address}</td>
-                        <td className="p-3">{row.mobile}</td>
-                        <td className="p-3">{row.amount}</td>
-                        <td className="p-3">{row.payment_mode}</td>
-                        <td className="p-3">{row.transaction_ref}</td>
                         <td className="p-3">
-                          {formatDateValue(row.receipt_date)}
+                          {reportType === "entries"
+                            ? row.receipt_no
+                            : row.voucher_no}
                         </td>
-                        <td className="p-3">{row.event}</td>
-                        <td className="p-3">{row.remark}</td>
+                        <td className="p-3">
+                          {reportType === "entries"
+                            ? row.donor_name
+                            : row.paid_to}
+                        </td>
+                        <td className="p-3">
+                          {reportType === "entries"
+                            ? row.donor_address
+                            : row.payment_for}
+                        </td>
+                        <td className="p-3">
+                          {reportType === "entries" ? row.mobile : row.event}
+                        </td>
+                        <td className="p-3">{row.amount}</td>
+                        <td className="p-3">
+                          {reportType === "entries"
+                            ? row.payment_mode
+                            : row.remark}
+                        </td>
+                        {reportType === "expenses" && (
+                          <td className="p-3">{formatParticulars(row)}</td>
+                        )}
+                        <td className="p-3">
+                          {reportType === "entries"
+                            ? formatDateValue(row.receipt_date)
+                            : formatDateValue(row.expense_date)}
+                        </td>
                         <td className="p-3">
                           {formatDateTimeValue(row.created_at)}
                         </td>
@@ -321,7 +400,11 @@ export default function Dashboard() {
                           {formatDateTimeValue(row.cancelled_at)}
                         </td>
                         <td className="p-3">{row.cancel_reason}</td>
-                        <td className="p-3">{row.received_by?.name || ""}</td>
+                        <td className="p-3">
+                          {reportType === "entries"
+                            ? row.received_by?.name || ""
+                            : row.created_by?.name || ""}
+                        </td>
                       </tr>
                     ))}
                   </tbody>

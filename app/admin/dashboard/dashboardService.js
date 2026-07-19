@@ -28,3 +28,18 @@ export async function fetchUserVoterdataReport({ fromDate, toDate }) {
   const result = await res.json();
   return { ok: res.ok, ...result };
 }
+
+export async function fetchExpenseVoucherReport({ fromDate, toDate }) {
+  if (!fromDate || !toDate) {
+    throw new Error("From date and To date are required");
+  }
+
+  const query = new URLSearchParams({
+    fromDate,
+    toDate,
+  }).toString();
+
+  const res = await fetch(`/api/dashboard/expense?${query}`);
+  const result = await res.json();
+  return { ok: res.ok, ...result };
+}

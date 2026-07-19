@@ -70,6 +70,12 @@ const Header = () => {
               <Link href="/donors" className="hover:text-purple-800 transition">
                 Donors
               </Link>
+              <Link
+                href="/expenses"
+                className="hover:text-purple-800 transition"
+              >
+                Expenses
+              </Link>
               {isAdminUser || isContributorUser ? (
                 <>
                   <Link
@@ -137,6 +143,13 @@ const Header = () => {
             onClick={() => setIsMenuOpen(false)}
           >
             Donors
+          </Link>
+          <Link
+            href="/expenses"
+            className="hover:text-purple-800 transition"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            Expenses
           </Link>
           {isAdminUser || isContributorUser ? (
             <>

@@ -179,6 +179,14 @@ const Receipt = React.forwardRef(({ donor }, ref) => {
             })}
           </span>
         </div>
+        <hr />
+        <div style={{ maxWidth: "100%", textAlign: "center", marginTop: 15 }}>
+          <img
+            src="../images/SamikshaEnterprises.jpeg"
+            alt="Samiksha Enterprises"
+            height="250px"
+          />
+        </div>
       </div>
     </div>
   );
